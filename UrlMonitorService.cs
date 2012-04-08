@@ -140,7 +140,7 @@ namespace UrlMonitor
             {
                 if (!Regex.IsMatch(response.Body, url.BodyRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline))
                 {
-                    message += "- Failed to match body regex" + Environment.NewLine;
+                    message += "- Failed to match body regex<br/>";
                 }
             }
             if (!string.IsNullOrWhiteSpace(url.HeadersRegex))
@@ -158,7 +158,7 @@ namespace UrlMonitor
 
                 if (!foundOne)
                 {
-                    message += "- Failed to match headers regex" + Environment.NewLine;
+                    message += "- Failed to match headers regex<br/>";
                 }
             }
             if (!string.IsNullOrWhiteSpace(url.StatusCodeRegex))
@@ -167,23 +167,23 @@ namespace UrlMonitor
 
                 if (!Regex.IsMatch(statusCodeString, url.StatusCodeRegex, RegexOptions.IgnoreCase))
                 {
-                    message += "- Failed to match status code regex, got " + statusCodeString;
+                    message += "- Failed to match status code regex, got " + statusCodeString + "<br/>";
                 }
             }
             if (url.AlertIfChanged && (url.MD51 != 0 || url.MD52 != 0) && (url.MD51 != response.MD51 || url.MD52 != response.MD52))
             {
-                message += "- MD5 Changed, body contents are new" + Environment.NewLine;
+                message += "- MD5 Changed, body contents are new<br/>";
             }
             if (url.MaxTime.TotalSeconds > 0.0d && response.Duration > url.MaxTime)
             {
-                message += "- URL took " + response.Duration.TotalSeconds.ToString("0.00") + " seconds, too long";
+                message += "- URL took " + response.Duration.TotalSeconds.ToString("0.00") + " seconds, too long<br/>";
             }
             url.MD51 = response.MD51;
             url.MD52 = response.MD52;
 
-            if (message.Length != 0)
+            if (message.Length != 0 && !string.IsNullOrWhiteSpace(url.MismatchMessage))
             {
-                message = ((url.MismatchMessage ?? string.Empty) + Environment.NewLine + message).Trim();
+                message = url.MismatchMessage + "<br/>" + message;
             }
 
             return message;
