@@ -71,7 +71,13 @@ namespace UrlMonitor
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            MonitoredUrl other = (obj as MonitoredUrl);
+            if (other == null)
+            {
+                return false;
+            }
+
+            return (Path == other.Path);
         }
 
         public override string ToString()
@@ -81,7 +87,14 @@ namespace UrlMonitor
 
         public int CompareTo(MonitoredUrl other)
         {
-            return LastCheck.CompareTo(other.LastCheck);
+            int result = LastCheck.CompareTo(other.LastCheck);
+
+            if (result == 0)
+            {
+                result = Path.CompareTo(other.Path);
+            }
+
+            return result;
         }
     }
 

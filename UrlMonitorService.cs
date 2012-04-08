@@ -208,10 +208,12 @@ namespace UrlMonitor
         {
             while (run)
             {
-                foreach (MonitoredUrl url in config.UrlSet.Where(u => !u.InProcess && (DateTime.UtcNow - u.LastCheck) > u.Frequency).ToArray())
+                MonitoredUrl[] urls = config.UrlSet.Where(u => !u.InProcess && (DateTime.UtcNow - u.LastCheck) > u.Frequency).ToArray();
+                foreach (MonitoredUrl url in urls)
                 {
                     Interlocked.Increment(ref threadCount);
                     url.InProcess = true;
+                    config.UrlSet.Remove(url);
                     url.LastCheck = DateTime.UtcNow;
                     config.UrlSet.Add(url);
                     ThreadPool.QueueUserWorkItem(new WaitCallback(ProcessUrl), url);
