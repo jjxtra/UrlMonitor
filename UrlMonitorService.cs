@@ -181,6 +181,11 @@ namespace UrlMonitor
             url.MD51 = response.MD51;
             url.MD52 = response.MD52;
 
+            if (message.Length != 0)
+            {
+                message = ((url.MismatchMessage ?? string.Empty) + Environment.NewLine + message).Trim();
+            }
+
             return message;
         }
 
