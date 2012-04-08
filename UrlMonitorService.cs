@@ -170,7 +170,7 @@ namespace UrlMonitor
                     message += "- Failed to match status code regex, got " + statusCodeString;
                 }
             }
-            if ((url.MD51 != 0 || url.MD52 != 0) && (url.MD51 != response.MD51 || url.MD52 != response.MD52))
+            if (url.AlertIfChanged && (url.MD51 != 0 || url.MD52 != 0) && (url.MD51 != response.MD51 || url.MD52 != response.MD52))
             {
                 message += "- MD5 Changed, body contents are new" + Environment.NewLine;
             }
