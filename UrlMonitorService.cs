@@ -174,7 +174,7 @@ namespace UrlMonitor
             {
                 message += "- MD5 Changed, body contents are new" + Environment.NewLine;
             }
-            if (response.Duration > url.MaxTime)
+            if (url.MaxTime.TotalSeconds > 0.0d && response.Duration > url.MaxTime)
             {
                 message += "- URL took " + response.Duration.TotalSeconds.ToString("0.00") + " seconds, too long";
             }
