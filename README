@@ -1,0 +1,11 @@
+﻿Digital Ruby, LLC Url Monitor
+http://www.digitalruby.com
+
+Instructions:
+
+- Make sure .NET 4.0 installed
+- Update the configuration file to have valid email settings
+- Setup the urls you want to monitor (we have a sample url for WWDC on Apple's site as an example)
+- Install service (i.e. sc create URLMONITOR type= own start= auto binPath= d:\system\urlmonitor\urlmonitor.exe DisplayName= URLMONITOR)
+- Has been tested with the GET protocol, POST and PUT are untested
+- Make sure to run as SYSTEM
