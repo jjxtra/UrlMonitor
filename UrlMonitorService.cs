@@ -181,9 +181,13 @@ namespace UrlMonitor
             url.MD51 = response.MD51;
             url.MD52 = response.MD52;
 
-            if (message.Length != 0 && !string.IsNullOrWhiteSpace(url.MismatchMessage))
+            if (message.Length != 0)
             {
-                message = url.MismatchMessage + "<br/>" + message;
+                if (!string.IsNullOrWhiteSpace(url.MismatchMessage))
+                {
+                    message = url.MismatchMessage + "<br/>" + message;
+                }
+                message = "<a href='" + url.Path + "' title='Url Link'>" + url.Path + "</a><br/>";
             }
 
             return message;
