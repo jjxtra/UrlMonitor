@@ -187,7 +187,7 @@ namespace UrlMonitor
                 {
                     message = url.MismatchMessage + "<br/>" + message;
                 }
-                message = "<a href='" + url.Path + "' title='Url Link'>" + url.Path + "</a><br/>";
+                message = "<a href='" + url.Path + "' title='Url Link'>" + url.Path + "</a><br/>" + message;
             }
 
             return message;
@@ -206,6 +206,10 @@ namespace UrlMonitor
                     SendEmail(url, emailBody);
                 }
             }
+            catch (Exception ex)
+            {
+                Log.Write(LogLevel.Error, "Error accessing url {0}, error: {1}", url.Path, ex);
+            }
             finally
             {
                 url.InProcess = false;
@@ -215,37 +219,44 @@ namespace UrlMonitor
 
         private void ServiceThread()
         {
-            while (run)
+            try
             {
-                MonitoredUrl[] urls = config.UrlSet.Where(u => !u.InProcess && (DateTime.UtcNow - u.LastCheck) > u.Frequency).ToArray();
-                foreach (MonitoredUrl url in urls)
+                while (run)
                 {
-                    Interlocked.Increment(ref threadCount);
-                    url.InProcess = true;
-                    config.UrlSet.Remove(url);
-                    url.LastCheck = DateTime.UtcNow;
-                    config.UrlSet.Add(url);
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(ProcessUrl), url);
-
-                    while (run && threadCount >= config.MaxThreads)
+                    MonitoredUrl[] urls = config.UrlSet.Where(u => !u.InProcess && (DateTime.UtcNow - u.LastCheck) > u.Frequency).ToArray();
+                    foreach (MonitoredUrl url in urls)
                     {
-                        Thread.Sleep(20);
+                        Interlocked.Increment(ref threadCount);
+                        url.InProcess = true;
+                        config.UrlSet.Remove(url);
+                        url.LastCheck = DateTime.UtcNow;
+                        config.UrlSet.Add(url);
+                        ThreadPool.QueueUserWorkItem(new WaitCallback(ProcessUrl), url);
+
+                        while (run && threadCount >= config.MaxThreads)
+                        {
+                            Thread.Sleep(20);
+                        }
+
+                        Thread.Sleep(config.SleepTimeUrl);
                     }
 
-                    Thread.Sleep(config.SleepTimeUrl);
+                    if (!run)
+                    {
+                        break;
+                    }
+
+                    Thread.Sleep(config.SleepTimeBatch);
                 }
 
-                if (!run)
+                while (threadCount != 0)
                 {
-                    break;
+                    Thread.Sleep(20);
                 }
-
-                Thread.Sleep(config.SleepTimeBatch);
             }
-
-            while (threadCount != 0)
+            catch (Exception ex)
             {
-                Thread.Sleep(20);
+                Log.Write(LogLevel.Error, "Fatal error: {0}", ex);
             }
         }
 
