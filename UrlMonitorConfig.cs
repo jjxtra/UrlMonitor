@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
@@ -51,7 +52,7 @@ namespace UrlMonitor
         public string FrequencyString
         {
             get { return Frequency.ToString(); }
-            set { Frequency = TimeSpan.Parse(value); }
+            set { Frequency = TimeSpan.Parse(value, CultureInfo.InvariantCulture); }
         }
 
         [XmlIgnore]
@@ -61,7 +62,7 @@ namespace UrlMonitor
         public string MaxTimeString
         {
             get { return MaxTime.ToString(); }
-            set { MaxTime = TimeSpan.Parse(value); }
+            set { MaxTime = TimeSpan.Parse(value, CultureInfo.InvariantCulture); }
         }
 
         public override int GetHashCode()
@@ -127,7 +128,7 @@ namespace UrlMonitor
         public string SleepTimeUrlString
         {
             get { return SleepTimeUrl.ToString(); }
-            set { SleepTimeUrl = TimeSpan.Parse(value); }
+            set { SleepTimeUrl = TimeSpan.Parse(value, CultureInfo.InvariantCulture); }
         }
 
         [XmlIgnore]
@@ -136,7 +137,7 @@ namespace UrlMonitor
         public string SleepTimeBatchString
         {
             get { return SleepTimeBatch.ToString(); }
-            set { SleepTimeBatch = TimeSpan.Parse(value); }
+            set { SleepTimeBatch = TimeSpan.Parse(value, CultureInfo.InvariantCulture); }
         }
     }
 }
