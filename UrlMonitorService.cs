@@ -208,7 +208,15 @@ namespace UrlMonitor
             }
             catch (Exception ex)
             {
-                Log.Write(LogLevel.Error, "Error accessing url {0}, error: {1}", url.Path, ex);
+                string msg = string.Format("Error accessing url {0}, error: {1}", url.Path, ex);
+                Log.Write(LogLevel.Error, msg);
+
+                WebException webException = ex as WebException;
+                if (webException != null)
+                {
+                    msg += ", status code: " + ((HttpWebResponse)webException.Response).StatusCode.ToString("D");
+                    SendEmail(url, msg);
+                }
             }
             finally
             {
